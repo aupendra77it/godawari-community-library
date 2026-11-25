@@ -2,12 +2,11 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -34,8 +33,7 @@ export default function AdminLoginPage() {
       return;
     }
 
-    const next = searchParams.get("next");
-    router.replace(next && next.startsWith("/admin") ? next : "/admin");
+    router.replace("/admin");
     router.refresh();
   }
 
@@ -50,35 +48,22 @@ export default function AdminLoginPage() {
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <label className="block text-sm font-medium">
             इमेल ठेगाना
-            <input
-              type="email"
-              autoComplete="username"
-              required
-              value={email}
+            <input type="email" autoComplete="username" required value={email}
               onChange={(event) => setEmail(event.target.value)}
               className="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-3 py-3 outline-none focus:border-green-700 focus:ring-2 focus:ring-green-100"
-              placeholder="admin@example.com"
-            />
+              placeholder="admin@example.com" />
           </label>
           <label className="block text-sm font-medium">
             पासवर्ड
-            <input
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
+            <input type="password" autoComplete="current-password" required value={password}
               onChange={(event) => setPassword(event.target.value)}
               className="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-3 py-3 outline-none focus:border-green-700 focus:ring-2 focus:ring-green-100"
-              placeholder="पासवर्ड लेख्नुहोस्"
-            />
+              placeholder="पासवर्ड लेख्नुहोस्" />
           </label>
 
           {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-green-800 px-4 py-3 font-semibold text-white transition hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <button type="submit" disabled={loading}
+            className="w-full rounded-xl bg-green-800 px-4 py-3 font-semibold text-white transition hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-60">
             {loading ? "लगइन हुँदैछ..." : "लगइन गर्नुहोस्"}
           </button>
         </form>
