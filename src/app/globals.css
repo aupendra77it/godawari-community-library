@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f7f8f4; color: #17251b; font-family: Arial, "Noto Sans Devanagari", sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+.container { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+.panel { background: white; border: 1px solid #e5e9e3; border-radius: 18px; box-shadow: 0 8px 28px rgba(20,50,25,.045); }
