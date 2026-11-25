@@ -19,6 +19,13 @@ A bilingual (Nepali/English), responsive web platform for **Godawari Community L
 11. तालिम हल — Training Hall
 12. दीयो सूचना कर्नर — Diyo Information Corner
 
+### Implemented foundation
+- Public library landing page and 12 resource-space directory
+- Supabase browser/server clients and session-refresh middleware
+- Staff email/password login and logout
+- Protected admin dashboard with active staff-role checks
+- Profile creation trigger and initial role-based Row Level Security policies
+
 ### Planned capabilities
 - Overview dashboard and operational reports
 - Book catalogue, copies, circulation, returns and overdue tracking
@@ -33,7 +40,7 @@ A bilingual (Nepali/English), responsive web platform for **Godawari Community L
 ### Technology
 - Next.js App Router + TypeScript
 - Tailwind CSS
-- Supabase (PostgreSQL, Auth, Storage) — planned backend
+- Supabase (PostgreSQL, Auth, Storage)
 - Vercel deployment — optional
 
 ### Quick start
@@ -41,29 +48,50 @@ Requirements: Node.js 20.9+ and npm.
 
 ```bash
 npm install
-cp .env.example .env.local
+# Create .env.local using the values from your Supabase project
 npm run dev
 ```
 
 Open http://localhost:3000.
 
-The initial scaffold works without Supabase credentials and uses clearly labelled demo data. Configure Supabase before enabling persistent records or staff login.
+### Supabase setup and first administrator
+1. In Supabase, open Project Settings → API and copy the Project URL and publishable key.
+2. Put them in the local .env.local file (never commit this file):
 
-### Environment variables
-See `.env.example`. Never commit `.env.local`, service-role keys, passwords, member exports or health records.
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_SUPABASE_PUBLISHABLE_KEY
+```
+
+3. Restart the development server after changing environment variables.
+4. In Supabase SQL Editor, run supabase/migrations/0001_initial_schema.sql, then supabase/migrations/0002_auth_roles_and_policies.sql, in that order.
+5. In Authentication → Users, create the first staff user with the intended email and a strong password. Keep public signups disabled for this staff-only portal.
+6. Run the following in SQL Editor, replacing the email with the account you just created:
+
+```sql
+update public.profiles p
+set role = 'super_admin', is_active = true
+from auth.users u
+where p.id = u.id and u.email = 'your-admin-email@example.com';
+```
+
+7. Visit http://localhost:3000/admin/login and sign in with that user.
+
+New Auth users receive the least-privileged member role automatically. Administrative roles must be assigned by a trusted administrator in the Supabase SQL Editor; users cannot grant roles to themselves through the app.
 
 ### Database
-The initial SQL schema and seed data are in `supabase/migrations` and `supabase/seed.sql`. Review policies and apply migrations only in a development Supabase project first. Health/vaccination information must be minimized and restricted to specifically authorized staff; this starter does not implement clinical recordkeeping.
+The SQL schema, policies and seed data are in supabase/migrations and supabase/seed.sql. Apply migrations only in a development Supabase project first. Health/vaccination information must be minimized and restricted to specifically authorized staff; this starter does not implement clinical recordkeeping.
 
 ### Security and privacy
 - Public repository means source code is public; it must never contain private library records.
-- Use Supabase Row Level Security (RLS) for every table before production.
+- Supabase Row Level Security (RLS) is enabled for the application tables and policies are role-scoped.
+- Member and circulation records are not public.
 - Keep health and child-related information out of public pages and general reports.
-- Use least-privilege roles, strong staff authentication, backups and audit logging.
+- Never expose a service-role key in browser code or commit .env.local.
 - Do not store passwords in application tables.
 
 ### Development roadmap
-1. Foundation, layout, navigation and dashboard
+1. Foundation, layout, navigation, authentication and roles
 2. Catalogue, members and circulation
 3. Management of all 12 resource spaces
 4. Programs, training, finance and administration
