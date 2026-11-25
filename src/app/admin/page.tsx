@@ -48,7 +48,7 @@ export default async function AdminPage() {
 
   const displayName = profile.full_name || user.email || "कर्मचारी";
   const modules = [
-    ["📚", "पुस्तक व्यवस्थापन", "पुस्तक सूची, वर्गीकरण र उपलब्ध प्रति"],
+    ["📚", "पुस्तक व्यवस्थापन", "पुस्तक सूची, वर्गीकरण र उपलब्ध प्रति", "/admin/books"],
     ["👥", "सदस्य व्यवस्थापन", "सदस्य दर्ता र सदस्यता विवरण"],
     ["🔄", "पुस्तक लेनदेन", "पुस्तक जारी, फिर्ता र म्याद"],
     ["🏠", "१२ कक्ष व्यवस्थापन", "कक्ष, स्रोतसाधन र गतिविधि"],
@@ -64,8 +64,8 @@ export default async function AdminPage() {
     <div className="container py-8">
       <div className="rounded-2xl bg-green-900 p-7 text-white"><p className="text-sm text-green-100">स्वागत छ</p><h2 className="mt-2 text-2xl font-bold">{displayName}</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-green-100">Godawari Community Library Resource Center को प्रशासन प्रणालीमा तपाईं सफलतापूर्वक लगइन हुनुभएको छ।</p></div>
       <h2 className="mt-8 text-lg font-bold">व्यवस्थापन मोड्युलहरू</h2>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{modules.map(([icon, title, description]) => <article key={title} className="panel p-5">
-        <div className="text-2xl">{icon}</div><h3 className="mt-3 font-bold">{title}</h3><p className="mt-1 text-sm leading-6 text-gray-600">{description}</p><span className="mt-4 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">आगामी चरण</span>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{modules.map(([icon, title, description, href]) => <article key={title} className="panel p-5">
+        <div className="text-2xl">{icon}</div><h3 className="mt-3 font-bold">{title}</h3><p className="mt-1 text-sm leading-6 text-gray-600">{description}</p>{href ? <Link href={href} className="mt-4 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-900">मोड्युल खोल्नुहोस् →</Link> : <span className="mt-4 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">आगामी चरण</span>}
       </article>)}</div>
       <p className="mt-8 text-xs leading-6 text-gray-500">अहिले Authentication र भूमिका जाँच सक्रिय छन्। व्यवस्थापन मोड्युलहरू अर्को विकास चरणमा Database सँग जोडिनेछन्।</p>
     </div>
