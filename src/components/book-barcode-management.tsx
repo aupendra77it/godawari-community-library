@@ -7,6 +7,17 @@ import { createClient } from "@/lib/supabase/client";
 
 type Book = { id: string; title: string; title_ne: string | null; isbn: string | null; barcode: string | null };
 
+function InstitutionLogo({ size = 42 }: { size?: number }) {
+  return <div style={{ width: size, height: size }} className="shrink-0 rounded-full border-[3px] border-orange-600 bg-white text-center flex flex-col items-center justify-center text-orange-700 leading-none shadow-sm">
+    <span style={{ fontSize: size * 0.19 }} className="font-extrabold">CLRC</span>
+    <span style={{ fontSize: size * 0.22 }} className="font-black">२०७४</span>
+  </div>;
+}
+
+const institutionNameNe = "गोदावरी सामुदायिक पुस्तकालय स्रोत केन्द्र";
+const institutionNameEn = "Godawari Community Library Resource Center";
+const institutionAddress = "गोदावरी नगरपालिका–४, बडिखेल, ललितपुर";
+
 export default function BookBarcodeManagement() {
   const supabase = createClient();
   const [books, setBooks] = useState<Book[]>([]);
@@ -60,9 +71,14 @@ export default function BookBarcodeManagement() {
             <h3 className="font-bold">{book.title_ne || book.title}</h3>
             <p className="mt-1 text-xs text-gray-500">{book.title} · ISBN: {book.isbn || "—"}</p>
             {book.barcode ? <div className="book-label-print-area mt-4 rounded-lg border border-dashed p-3">
-              <div className="text-center">
-                <p className="text-xs font-bold tracking-wide">GODAWARI COMMUNITY LIBRARY</p>
-                <p className="mt-1 text-sm font-bold">{book.title_ne || book.title}</p>
+              <div className="flex items-center justify-center gap-2 text-center">
+                <InstitutionLogo size={15} />
+                <div className="min-w-0">
+                  <p className="text-[10px] font-extrabold leading-tight">{institutionNameNe}</p>
+                  <p className="text-[8px] font-semibold leading-tight">{institutionNameEn}</p>
+                  <p className="text-[7px] leading-tight">{institutionAddress} · स्थापना: २०७४</p>
+                  <p className="mt-1 text-xs font-bold">{book.title_ne || book.title}</p>
+                </div>
               </div>
               <div className="book-label-codes mt-2">
                 <div className="book-label-barcode min-w-0 text-center">
@@ -117,6 +133,7 @@ export default function BookBarcodeManagement() {
       #book-label-print-root { display: none; }
       @media print {
         @page { size: A4 portrait; margin: 5mm; }
+        #book-label-print-root .book-label-print-area { color: #111 !important; }
         body.printing-book-label > * { display: none !important; }
         body.printing-book-label > #book-label-print-root {
           display: grid !important;
