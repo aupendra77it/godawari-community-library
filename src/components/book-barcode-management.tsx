@@ -75,7 +75,16 @@ export default function BookBarcodeManagement() {
               </div>
               <p className="mt-1 text-center text-[10px] text-gray-600">{book.barcode}</p>
               <div className="no-print text-center">
-                <button type="button" onClick={() => window.print()} className="mt-3 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Barcode र QR Label प्रिन्ट गर्नुहोस्</button>
+                <button type="button" onClick={(event) => {
+                  const label = event.currentTarget.closest(".book-label-print-area");
+                  if (!label) return;
+                  document.querySelectorAll(".book-label-print-area").forEach((item) => item.classList.remove("print-this-label"));
+                  label.classList.add("print-this-label");
+                  document.body.classList.add("printing-book-label");
+                  window.print();
+                  document.body.classList.remove("printing-book-label");
+                  label.classList.remove("print-this-label");
+                }} className="mt-3 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Barcode र QR Label प्रिन्ट गर्नुहोस्</button>
               </div>
             </div> : <button type="button" disabled={savingId === book.id} onClick={() => void assignBarcode(book)} className="mt-4 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{savingId === book.id ? "तयार हुँदैछ..." : "Barcode र QR Code तयार गर्नुहोस्"}</button>}
           </article>)}
@@ -87,8 +96,9 @@ export default function BookBarcodeManagement() {
       .book-label-barcode svg { display: block; width: 100% !important; max-width: 100% !important; height: auto !important; }
       .book-label-codes > div:last-child svg { display: block; width: 20mm; height: 20mm; max-width: 20mm; }
       @media print {
-        body * { visibility: hidden !important; }
-        .book-label-print-area, .book-label-print-area * { visibility: visible !important; }
+        body.printing-book-label * { visibility: hidden !important; }
+        body.printing-book-label .print-this-label,
+        body.printing-book-label .print-this-label * { visibility: visible !important; }
         @page { size: 100mm 65mm; margin: 0; }
         .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; box-sizing: border-box; width: 100mm; height: 65mm; padding: 3mm !important; overflow: hidden; }
         .book-label-codes { grid-template-columns: minmax(0, 1fr) 22mm !important; }
