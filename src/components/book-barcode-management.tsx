@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Barcode from "react-barcode";
+import { QRCodeSVG } from "qrcode.react";
 import { createClient } from "@/lib/supabase/client";
 
 type Book = { id: string; title: string; title_ne: string | null; isbn: string | null; barcode: string | null };
@@ -42,13 +43,13 @@ export default function BookBarcodeManagement() {
 
   return <main className="min-h-screen bg-gray-50">
     <header className="border-b bg-white"><div className="container flex items-center justify-between py-4">
-      <div><p className="text-xs font-bold tracking-wider text-green-800">GODAWARI COMMUNITY LIBRARY</p><h1 className="text-xl font-bold">पुस्तक Barcode व्यवस्थापन</h1></div>
+      <div><p className="text-xs font-bold tracking-wider text-green-800">GODAWARI COMMUNITY LIBRARY</p><h1 className="text-xl font-bold">पुस्तक Barcode तथा QR Label व्यवस्थापन</h1></div>
       <a href="/admin" className="font-semibold text-green-800">← Dashboard</a>
     </div></header>
     <div className="container space-y-5 py-7">
       <section className="panel p-5">
-        <h2 className="font-bold">पुस्तकको Barcode तयार तथा प्रिन्ट</h2>
-        <p className="mt-2 text-sm leading-6 text-gray-600">प्रत्येक पुस्तक रेकर्डका लागि एउटा अद्वितीय Barcode तयार हुन्छ। Barcode लेबल प्रिन्ट गरेर पुस्तकमा टाँस्नुहोस्। एउटै पुस्तकका धेरै प्रति भए प्रत्येक प्रतिलाई छुट्टै पहिचान चाहिने अवस्थामा प्रति-स्तरको Barcode प्रणाली अर्को चरणमा विस्तार गर्न सकिन्छ।</p>
+        <h2 className="font-bold">पुस्तकको Barcode र QR Code लेबल तयार तथा प्रिन्ट</h2>
+        <p className="mt-2 text-sm leading-6 text-gray-600">प्रत्येक पुस्तक रेकर्डका लागि एउटा अद्वितीय Barcode र QR Code तयार हुन्छ। दुवै कोडमा एउटै पुस्तक पहिचान नम्बर प्रयोग हुन्छ। लेबल प्रिन्ट गरेर पुस्तकमा टाँस्नुहोस्। एउटै पुस्तकका धेरै प्रति भए प्रत्येक प्रतिलाई छुट्टै पहिचान चाहिने अवस्थामा प्रति-स्तरको Barcode प्रणाली अर्को चरणमा विस्तार गर्न सकिन्छ।</p>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="पुस्तकको नाम, ISBN वा Barcode खोज्नुहोस्..." className="mt-4 w-full max-w-md rounded-lg border p-2.5" />
       </section>
       {message && <p className="rounded-lg bg-green-50 p-3 text-sm text-green-900">{message}</p>}
@@ -57,20 +58,34 @@ export default function BookBarcodeManagement() {
           {filtered.map(book => <article key={book.id} className="panel p-5">
             <h3 className="font-bold">{book.title_ne || book.title}</h3>
             <p className="mt-1 text-xs text-gray-500">{book.title} · ISBN: {book.isbn || "—"}</p>
-            {book.barcode ? <div className="barcode-print-area mt-4 rounded-lg border border-dashed p-3 text-center">
-              <Barcode value={"GCL-BOOK:" + book.barcode} format="CODE128" width={1.6} height={58} displayValue margin={4} fontSize={11} />
-              <p className="mt-1 text-xs font-semibold">{book.title_ne || book.title}</p>
-              <p className="text-xs text-gray-500">{book.barcode}</p>
-              <button type="button" onClick={() => window.print()} className="no-print mt-3 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Barcode प्रिन्ट गर्नुहोस्</button>
-            </div> : <button type="button" disabled={savingId === book.id} onClick={() => void assignBarcode(book)} className="mt-4 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{savingId === book.id ? "तयार हुँदैछ..." : "Barcode तयार गर्नुहोस्"}</button>}
+            {book.barcode ? <div className="book-label-print-area mt-4 rounded-lg border border-dashed p-3">
+              <div className="text-center">
+                <p className="text-xs font-bold tracking-wide">GODAWARI COMMUNITY LIBRARY</p>
+                <p className="mt-1 text-sm font-bold">{book.title_ne || book.title}</p>
+              </div>
+              <div className="mt-2 flex items-center justify-center gap-3">
+                <div className="min-w-0 flex-1 text-center">
+                  <Barcode value={"GCL-BOOK:" + book.barcode} format="CODE128" width={1.35} height={48} displayValue margin={3} fontSize={10} />
+                  <p className="text-[10px] text-gray-600">Barcode</p>
+                </div>
+                <div className="shrink-0 text-center">
+                  <QRCodeSVG value={"GCL-BOOK:" + book.barcode} size={92} level="M" />
+                  <p className="text-[10px] text-gray-600">QR Code</p>
+                </div>
+              </div>
+              <p className="mt-1 text-center text-[10px] text-gray-600">{book.barcode}</p>
+              <div className="no-print text-center">
+                <button type="button" onClick={() => window.print()} className="mt-3 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Barcode र QR Label प्रिन्ट गर्नुहोस्</button>
+              </div>
+            </div> : <button type="button" disabled={savingId === book.id} onClick={() => void assignBarcode(book)} className="mt-4 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{savingId === book.id ? "तयार हुँदैछ..." : "Barcode र QR Code तयार गर्नुहोस्"}</button>}
           </article>)}
         </section>}
     </div>
     <style jsx global>{`
       @media print {
         body * { visibility: hidden !important; }
-        .barcode-print-area, .barcode-print-area * { visibility: visible !important; }
-        .barcode-print-area { position: absolute; left: 0; top: 0; border: 0 !important; width: 90mm; }
+        .book-label-print-area, .book-label-print-area * { visibility: visible !important; }
+        .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; width: 100mm; padding: 3mm !important; }
         .no-print { display: none !important; }
       }
     `}</style>
