@@ -7,7 +7,9 @@ type Props = { onMemberScanned: (membershipNo: string) => void };
 export default function MemberQrPicker({ onMemberScanned }: Props) {
   const scannerRef = useRef<import("html5-qrcode").Html5QrcodeScanner | null>(null);
   const handledRef = useRef(false);
+  const onMemberScannedRef = useRef(onMemberScanned);
   const [error, setError] = useState("");
+  onMemberScannedRef.current = onMemberScanned;
 
   useEffect(() => {
     let cancelled = false;
@@ -34,7 +36,7 @@ export default function MemberQrPicker({ onMemberScanned }: Props) {
             handledRef.current = false;
             return;
           }
-          onMemberScanned(membershipNo);
+          onMemberScannedRef.current(membershipNo);
           try { await scanner.clear(); } catch { /* Scanner may already be stopped. */ }
         }, () => {
           // Ignore continuous scan misses.
@@ -52,7 +54,7 @@ export default function MemberQrPicker({ onMemberScanned }: Props) {
         scannerRef.current = null;
       }
     };
-  }, [onMemberScanned]);
+  }, []);
 
   return <div>
     <p className="mb-2 text-sm text-gray-600">सदस्य परिचयपत्रको QR Code क्यामेराअगाडि राख्नुहोस्।</p>
