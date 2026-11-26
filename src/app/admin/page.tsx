@@ -49,6 +49,7 @@ export default async function AdminPage() {
   const displayName = profile.full_name || user.email || "कर्मचारी";
   const modules = [
     ["📚", "पुस्तक व्यवस्थापन", "पुस्तक सूची, वर्गीकरण र उपलब्ध प्रति", "/admin/books"],
+    ["▥", "पुस्तक Barcode", "पुस्तक Barcode तयार र प्रिन्ट", "/admin/book-barcodes"],
     ["👥", "सदस्य व्यवस्थापन", "सदस्य दर्ता र सदस्यता विवरण", "/admin/members"],
     ["🪪", "सदस्य परिचयपत्र", "QR Code सहित सदस्य ID Card प्रिन्ट", "/admin/member-cards"],
     ["📷", "QR Code स्क्यान", "QR स्क्यान गरी सदस्यको विवरण खोज्नुहोस्", "/admin/member-qr-scan"],
