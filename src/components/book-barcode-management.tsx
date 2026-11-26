@@ -63,13 +63,13 @@ export default function BookBarcodeManagement() {
                 <p className="text-xs font-bold tracking-wide">GODAWARI COMMUNITY LIBRARY</p>
                 <p className="mt-1 text-sm font-bold">{book.title_ne || book.title}</p>
               </div>
-              <div className="mt-2 flex items-center justify-center gap-3">
-                <div className="min-w-0 flex-1 text-center">
-                  <Barcode value={"GCL-BOOK:" + book.barcode} format="CODE128" width={1.35} height={48} displayValue margin={3} fontSize={10} />
+              <div className="mt-2 grid grid-cols-[minmax(0,1fr)_26mm] items-center gap-2">
+                <div className="min-w-0 overflow-hidden text-center">
+                  <Barcode value={"GCL-BOOK:" + book.barcode} format="CODE128" width={1.05} height={38} displayValue margin={1} fontSize={8} />
                   <p className="text-[10px] text-gray-600">Barcode</p>
                 </div>
-                <div className="shrink-0 text-center">
-                  <QRCodeSVG value={"GCL-BOOK:" + book.barcode} size={92} level="M" />
+                <div className="flex flex-col items-center justify-center text-center">
+                  <QRCodeSVG value={"GCL-BOOK:" + book.barcode} size={88} level="M" />
                   <p className="text-[10px] text-gray-600">QR Code</p>
                 </div>
               </div>
@@ -85,7 +85,9 @@ export default function BookBarcodeManagement() {
       @media print {
         body * { visibility: hidden !important; }
         .book-label-print-area, .book-label-print-area * { visibility: visible !important; }
-        .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; width: 100mm; padding: 3mm !important; }
+        @page { size: 100mm 65mm; margin: 0; }
+        .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; box-sizing: border-box; width: 100mm; min-height: 65mm; padding: 3mm !important; }
+        .book-label-print-area svg { max-width: 100%; }
         .no-print { display: none !important; }
       }
     `}</style>
