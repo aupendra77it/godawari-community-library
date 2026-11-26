@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import MemberQrPicker from "@/components/member-qr-picker";
 
 type Book = { id:string; title:string; title_ne:string|null; author:string|null; available_copies:number; total_copies:number };
 type Member = { id:string; membership_no:string; full_name:string; full_name_ne:string|null; status:string };
@@ -15,6 +16,7 @@ export default function CirculationManagement() {
  const [loans,setLoans]=useState<Loan[]>([]);
  const [bookId,setBookId]=useState("");
  const [memberId,setMemberId]=useState("");
+ const [showMemberScanner,setShowMemberScanner]=useState(false);
  const [dueAt,setDueAt]=useState(dateAfter(14));
  const [fineRate,setFineRate]=useState("5");
  const [search,setSearch]=useState("");
@@ -62,7 +64,7 @@ export default function CirculationManagement() {
   <div className="container space-y-6 py-7">
    <section className="panel p-6"><h2 className="text-lg font-bold">नयाँ पुस्तक जारी गर्नुहोस्</h2><form onSubmit={issue} className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <label className="text-sm font-medium">पुस्तक छान्नुहोस् *<select required value={bookId} onChange={e=>setBookId(e.target.value)} className="mt-1 w-full rounded-lg border p-2.5"><option value="">पुस्तक छान्नुहोस्</option>{books.filter(b=>b.available_copies>0).map(b=><option key={b.id} value={b.id}>{b.title_ne||b.title} — उपलब्ध {b.available_copies}/{b.total_copies}</option>)}</select></label>
-    <label className="text-sm font-medium">सक्रिय सदस्य छान्नुहोस् *<select required value={memberId} onChange={e=>setMemberId(e.target.value)} className="mt-1 w-full rounded-lg border p-2.5"><option value="">सदस्य छान्नुहोस्</option>{members.map(m=><option key={m.id} value={m.id}>{m.membership_no} — {m.full_name_ne||m.full_name}</option>)}</select></label>
+    <div className="text-sm font-medium"><label>सक्रिय सदस्य छान्नुहोस् *<select required value={memberId} onChange={e=>setMemberId(e.target.value)} className="mt-1 w-full rounded-lg border p-2.5"><option value="">सदस्य छान्नुहोस्</option>{members.map(m=><option key={m.id} value={m.id}>{m.membership_no} — {m.full_name_ne||m.full_name}</option>)}</select></label><button type="button" onClick={()=>setShowMemberScanner(v=>!v)} className="mt-2 rounded-lg border border-green-800 px-3 py-2 text-sm font-semibold text-green-800">{showMemberScanner?"QR Scanner बन्द गर्नुहोस्":"📷 QR स्क्यान गरी सदस्य छान्नुहोस्"}</button>{showMemberScanner&&<div className="mt-3 rounded-lg border bg-white p-3"><MemberQrPicker onMemberScanned={(membershipNo)=>{const found=members.find(m=>m.membership_no===membershipNo);if(found){setMemberId(found.id);setMessage("QR स्क्यान सफल भयो: "+(found.full_name_ne||found.full_name)+" ("+found.membership_no+")");setShowMemberScanner(false);}else{setMessage("यो सदस्य सक्रिय छैन वा सूचीमा भेटिएन: "+membershipNo);}}}/></div>}</div>
     <label className="text-sm font-medium">फिर्ता गर्नुपर्ने मिति *<input required type="date" min={new Date().toISOString().slice(0,10)} value={dueAt} onChange={e=>setDueAt(e.target.value)} className="mt-1 w-full rounded-lg border p-2.5"/></label>
     <div className="sm:col-span-2 lg:col-span-3"><button disabled={saving||!books.length||!members.length} className="rounded-lg bg-green-800 px-5 py-2.5 font-semibold text-white disabled:opacity-60">{saving?"प्रक्रिया हुँदैछ...":"पुस्तक जारी गर्नुहोस्"}</button></div>
    </form>{(!books.length||!members.length)&&!loading&&<p className="mt-3 text-sm text-amber-800">पुस्तक जारी गर्न कम्तीमा एउटा पुस्तक र एउटा सक्रिय सदस्य आवश्यक छ।</p>}</section>
