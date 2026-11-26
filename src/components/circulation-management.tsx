@@ -17,7 +17,8 @@ export default function CirculationManagement() {
  const [loans,setLoans]=useState<Loan[]>([]);
  const [bookId,setBookId]=useState("");
  const [memberId,setMemberId]=useState("");
- const [showMemberScanner,setShowMemberScanner]=useState(false);\n const [showBookScanner,setShowBookScanner]=useState(false);
+ const [showMemberScanner,setShowMemberScanner]=useState(false);
+ const [showBookScanner,setShowBookScanner]=useState(false);
  const [dueAt,setDueAt]=useState(dateAfter(14));
  const [fineRate,setFineRate]=useState("5");
  const [search,setSearch]=useState("");
