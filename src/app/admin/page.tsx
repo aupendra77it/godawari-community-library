@@ -62,11 +62,11 @@ export default async function AdminPage() {
 
   return <main className="min-h-screen">
     <header className="border-b border-green-100 bg-white"><div className="container flex flex-wrap items-center justify-between gap-4 py-4">
-      <div><p className="text-xs font-bold tracking-wider text-green-800">GODAWARI COMMUNITY LIBRARY</p><h1 className="mt-1 text-xl font-bold">प्रशासन Dashboard</h1></div>
+      <div className="flex items-center gap-3"><div className="h-12 w-12 shrink-0 rounded-full border-[3px] border-orange-600 bg-white text-orange-700 flex flex-col items-center justify-center leading-none"><span className="text-[9px] font-extrabold">CLRC</span><span className="text-[11px] font-black">२०७४</span></div><div><p className="text-sm font-bold text-orange-700">गोदावरी सामुदायिक पुस्तकालय स्रोत केन्द्र</p><p className="text-xs font-semibold text-gray-600">Godawari Community Library Resource Center</p><p className="text-[11px] text-gray-500">गोदावरी नगरपालिका–४, बडिखेल, ललितपुर</p><h1 className="mt-1 text-lg font-bold">प्रशासन Dashboard</h1></div></div>
       <div className="flex items-center gap-3"><div className="text-right"><p className="text-sm font-semibold">{displayName}</p><p className="text-xs text-gray-500">{roleLabels[profile.role] ?? profile.role}</p></div><AdminSignOut /></div>
     </div></header>
     <div className="container py-8">
-      <div className="rounded-2xl bg-green-900 p-7 text-white"><p className="text-sm text-green-100">स्वागत छ</p><h2 className="mt-2 text-2xl font-bold">{displayName}</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-green-100">Godawari Community Library Resource Center को प्रशासन प्रणालीमा तपाईं सफलतापूर्वक लगइन हुनुभएको छ।</p></div>
+      <div className="rounded-2xl bg-green-900 p-7 text-white"><p className="text-sm text-green-100">स्वागत छ</p><h2 className="mt-2 text-2xl font-bold">{displayName}</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-green-100">गोदावरी सामुदायिक पुस्तकालय स्रोत केन्द्रको प्रशासन प्रणालीमा तपाईं सफलतापूर्वक लगइन हुनुभएको छ।</p></div>
       <h2 className="mt-8 text-lg font-bold">व्यवस्थापन मोड्युलहरू</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{modules.map(([icon, title, description, href]) => <article key={title} className="panel p-5">
         <div className="text-2xl">{icon}</div><h3 className="mt-3 font-bold">{title}</h3><p className="mt-1 text-sm leading-6 text-gray-600">{description}</p>{href ? <Link href={href} className="mt-4 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-900">मोड्युल खोल्नुहोस् →</Link> : <span className="mt-4 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">आगामी चरण</span>}
