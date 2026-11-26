@@ -63,13 +63,13 @@ export default function BookBarcodeManagement() {
                 <p className="text-xs font-bold tracking-wide">GODAWARI COMMUNITY LIBRARY</p>
                 <p className="mt-1 text-sm font-bold">{book.title_ne || book.title}</p>
               </div>
-              <div className="mt-2 grid grid-cols-[minmax(0,1fr)_26mm] items-center gap-2">
-                <div className="min-w-0 overflow-hidden text-center">
-                  <Barcode value={"GCL-BOOK:" + book.barcode} format="CODE128" width={1.05} height={38} displayValue margin={1} fontSize={8} />
+              <div className="book-label-codes mt-2">
+                <div className="book-label-barcode min-w-0 text-center">
+                  <Barcode value={"GCL-BOOK:" + book.barcode} format="CODE128" width={0.9} height={34} displayValue margin={1} fontSize={7} />
                   <p className="text-[10px] text-gray-600">Barcode</p>
                 </div>
                 <div className="flex flex-col items-center justify-center text-center">
-                  <QRCodeSVG value={"GCL-BOOK:" + book.barcode} size={88} level="M" />
+                  <QRCodeSVG value={"GCL-BOOK:" + book.barcode} size={76} level="M" />
                   <p className="text-[10px] text-gray-600">QR Code</p>
                 </div>
               </div>
@@ -86,8 +86,11 @@ export default function BookBarcodeManagement() {
         body * { visibility: hidden !important; }
         .book-label-print-area, .book-label-print-area * { visibility: visible !important; }
         @page { size: 100mm 65mm; margin: 0; }
-        .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; box-sizing: border-box; width: 100mm; min-height: 65mm; padding: 3mm !important; }
-        .book-label-print-area svg { max-width: 100%; }
+        .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; box-sizing: border-box; width: 100mm; height: 65mm; padding: 3mm !important; overflow: hidden; }
+        .book-label-codes { display: grid !important; grid-template-columns: minmax(0, 1fr) 22mm !important; column-gap: 3mm !important; align-items: center !important; width: 100%; }
+        .book-label-barcode { min-width: 0; overflow: hidden; }
+        .book-label-barcode svg { display: block; width: 100% !important; max-width: 100% !important; height: auto !important; }
+        .book-label-codes > div:last-child svg { display: block; width: 20mm !important; height: 20mm !important; max-width: 20mm !important; }
         .no-print { display: none !important; }
       }
     `}</style>
