@@ -14,6 +14,7 @@ export default function BookBarcodeManagement() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [labelCopies, setLabelCopies] = useState(1);
 
   async function load() {
     if (!supabase) { setMessage("Supabase सेटअप जाँच गर्नुहोस्।"); setLoading(false); return; }
@@ -74,16 +75,26 @@ export default function BookBarcodeManagement() {
                 </div>
               </div>
               <p className="mt-1 text-center text-[10px] text-gray-600">{book.barcode}</p>
-              <div className="no-print text-center">
+              <div className="no-print mt-3 flex flex-wrap items-center justify-center gap-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Label संख्या
+                  <input type="number" min={1} max={100} value={labelCopies}
+                    onChange={(event) => setLabelCopies(Math.max(1, Math.min(100, Number(event.target.value) || 1)))}
+                    className="ml-2 w-20 rounded-lg border p-2" />
+                </label>
                 <button type="button" onClick={(event) => {
                   const label = event.currentTarget.closest(".book-label-print-area");
                   if (!label) return;
                   document.getElementById("book-label-print-root")?.remove();
                   const printRoot = document.createElement("div");
                   printRoot.id = "book-label-print-root";
-                  const printLabel = label.cloneNode(true) as HTMLElement;
-                  printLabel.classList.remove("mt-4", "rounded-lg", "border", "border-dashed", "p-3");
-                  printRoot.appendChild(printLabel);
+                  const copies = Math.max(1, Math.min(100, labelCopies));
+                  for (let index = 0; index < copies; index += 1) {
+                    const printLabel = label.cloneNode(true) as HTMLElement;
+                    printLabel.classList.remove("mt-4", "rounded-lg", "border", "border-dashed", "p-3");
+                    printLabel.querySelector(".no-print")?.remove();
+                    printRoot.appendChild(printLabel);
+                  }
                   document.body.appendChild(printRoot);
                   document.body.classList.add("printing-book-label");
                   const cleanup = () => {
@@ -92,7 +103,7 @@ export default function BookBarcodeManagement() {
                   };
                   window.addEventListener("afterprint", cleanup, { once: true });
                   window.print();
-                }} className="mt-3 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Barcode र QR Label प्रिन्ट गर्नुहोस्</button>
+                }} className="rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Barcode र QR Label प्रिन्ट गर्नुहोस्</button>
               </div>
             </div> : <button type="button" disabled={savingId === book.id} onClick={() => void assignBarcode(book)} className="mt-4 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{savingId === book.id ? "तयार हुँदैछ..." : "Barcode र QR Code तयार गर्नुहोस्"}</button>}
           </article>)}
@@ -103,18 +114,18 @@ export default function BookBarcodeManagement() {
       .book-label-barcode { min-width: 0; overflow: hidden; }
       .book-label-barcode svg { display: block; width: 100% !important; max-width: 100% !important; height: auto !important; }
       .book-label-codes > div:last-child svg { display: block; width: 20mm; height: 20mm; max-width: 20mm; }
+      #book-label-print-root { display: none; }
       @media print {
-        @page { size: 100mm 65mm; margin: 0; }
+        @page { size: A4 portrait; margin: 5mm; }
         body.printing-book-label > * { display: none !important; }
         body.printing-book-label > #book-label-print-root {
-          display: block !important;
-          position: fixed !important;
-          inset: 0 auto auto 0 !important;
-          width: 100mm !important;
-          height: 65mm !important;
-          margin: 0 !important;
+          display: grid !important;
+          grid-template-columns: repeat(2, 100mm);
+          grid-auto-rows: 65mm;
+          gap: 0;
+          width: 200mm !important;
+          margin: 0 auto !important;
           padding: 0 !important;
-          overflow: hidden !important;
           background: white !important;
         }
         #book-label-print-root .book-label-print-area {
@@ -126,6 +137,8 @@ export default function BookBarcodeManagement() {
           padding: 3mm !important;
           border: 0 !important;
           overflow: hidden !important;
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
         }
         #book-label-print-root .book-label-codes {
           display: grid !important;
