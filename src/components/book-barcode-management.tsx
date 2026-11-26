@@ -82,15 +82,17 @@ export default function BookBarcodeManagement() {
         </section>}
     </div>
     <style jsx global>{`
+      .book-label-codes { display: grid; grid-template-columns: minmax(0, 1fr) 22mm; column-gap: 3mm; align-items: center; width: 100%; }
+      .book-label-barcode { min-width: 0; overflow: hidden; }
+      .book-label-barcode svg { display: block; width: 100% !important; max-width: 100% !important; height: auto !important; }
+      .book-label-codes > div:last-child svg { display: block; width: 20mm; height: 20mm; max-width: 20mm; }
       @media print {
         body * { visibility: hidden !important; }
         .book-label-print-area, .book-label-print-area * { visibility: visible !important; }
         @page { size: 100mm 65mm; margin: 0; }
         .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; box-sizing: border-box; width: 100mm; height: 65mm; padding: 3mm !important; overflow: hidden; }
-        .book-label-codes { display: grid !important; grid-template-columns: minmax(0, 1fr) 22mm !important; column-gap: 3mm !important; align-items: center !important; width: 100%; }
-        .book-label-barcode { min-width: 0; overflow: hidden; }
-        .book-label-barcode svg { display: block; width: 100% !important; max-width: 100% !important; height: auto !important; }
-        .book-label-codes > div:last-child svg { display: block; width: 20mm !important; height: 20mm !important; max-width: 20mm !important; }
+        .book-label-codes { grid-template-columns: minmax(0, 1fr) 22mm !important; }
+        .book-label-codes > div:last-child svg { width: 20mm !important; height: 20mm !important; max-width: 20mm !important; }
         .no-print { display: none !important; }
       }
     `}</style>
