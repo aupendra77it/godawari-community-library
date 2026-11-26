@@ -37,6 +37,7 @@ export default function CirculationManagement() {
  }
  useEffect(()=>{void load();},[]);
  const activeLoans=useMemo(()=>loans.filter(l=>!l.returned_at),[loans]);
+ const returnedLoans=useMemo(()=>loans.filter(l=>Boolean(l.returned_at)),[loans]);
  const filtered=activeLoans.filter(l=>[l.books?.title,l.books?.title_ne,l.members?.full_name,l.members?.full_name_ne,l.members?.membership_no].some(v=>v?.toLowerCase().includes(search.toLowerCase())));
  async function issue(e:FormEvent<HTMLFormElement>) {
   e.preventDefault(); if(!supabase||!bookId||!memberId)return;
@@ -69,6 +70,14 @@ export default function CirculationManagement() {
     <label className="mt-4 block max-w-xs text-sm font-medium">ढिलो फिर्ता गर्दा जरिवाना (रु./दिन)<input type="number" min="0" step="0.01" value={fineRate} onChange={e=>setFineRate(e.target.value)} className="mt-1 w-full rounded-lg border p-2.5"/></label>
     {loading?<p className="py-8 text-center text-gray-500">लेनदेन सूची लोड हुँदैछ...</p>:filtered.length===0?<p className="py-8 text-center text-gray-500">हाल जारी पुस्तक छैन।</p>:
     <div className="mt-4 overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-gray-100"><tr>{["पुस्तक","सदस्य","जारी मिति","फिर्ता मिति","स्थिति","कार्य"].map(x=><th key={x} className="p-3">{x}</th>)}</tr></thead><tbody>{filtered.map(l=><tr key={l.id} className="border-b"><td className="p-3 font-semibold">{l.books?.title_ne||l.books?.title||"—"}</td><td className="p-3">{l.members?.full_name_ne||l.members?.full_name||"—"}<div className="text-xs text-gray-500">{l.members?.membership_no}</div></td><td className="p-3">{new Date(l.issued_at).toLocaleDateString("en-GB")}</td><td className="p-3">{new Date(l.due_at+"T00:00:00").toLocaleDateString("en-GB")}</td><td className="p-3">{new Date(l.due_at+"T23:59:59")<new Date()?"म्याद नाघेको":"जारी"}</td><td className="p-3"><button disabled={saving} onClick={()=>void giveBack(l)} className="whitespace-nowrap font-semibold text-green-800 disabled:opacity-50">फिर्ता लिनुहोस्</button></td></tr>)}</tbody></table></div>}
+   </section>
+   <section className="panel p-6">
+    <div className="flex flex-wrap items-center justify-between gap-3">
+     <h2 className="text-lg font-bold">फिर्ता भएका पुस्तकको इतिहास ({returnedLoans.length})</h2>
+     <button type="button" onClick={()=>void load()} disabled={loading} className="rounded-lg border px-3 py-2 text-sm font-semibold text-green-800 disabled:opacity-50">↻ Refresh</button>
+    </div>
+    {loading?<p className="py-6 text-center text-gray-500">इतिहास लोड हुँदैछ...</p>:returnedLoans.length===0?<p className="py-6 text-center text-gray-500">फिर्ता भएका पुस्तकको अभिलेख छैन।</p>:
+    <div className="mt-4 overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-gray-100"><tr>{["पुस्तक","सदस्य","जारी मिति","फिर्ता मिति","जरिवाना"].map(x=><th key={x} className="p-3">{x}</th>)}</tr></thead><tbody>{returnedLoans.map(l=><tr key={l.id} className="border-b"><td className="p-3 font-semibold">{l.books?.title_ne||l.books?.title||"—"}</td><td className="p-3">{l.members?.full_name_ne||l.members?.full_name||"—"}<div className="text-xs text-gray-500">{l.members?.membership_no}</div></td><td className="p-3">{new Date(l.issued_at).toLocaleDateString("en-GB")}</td><td className="p-3">{l.returned_at?new Date(l.returned_at).toLocaleDateString("en-GB"):"—"}</td><td className="p-3 font-semibold">रु. {Number(l.fine_amount||0).toFixed(2)}</td></tr>)}</tbody></table></div>}
    </section>
    {message&&<p className="rounded-lg bg-green-50 p-3 text-sm text-green-900">{message}</p>}
   </div>
