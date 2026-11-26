@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type Book = { id:string; title:string; title_ne:string|null; author:string|null; available_copies:number; total_copies:number };
 type Member = { id:string; membership_no:string; full_name:string; full_name_ne:string|null; status:string };
 type Loan = { id:string; book_id:string; member_id:string; issued_at:string; due_at:string; returned_at:string|null; status:string; fine_amount:number; books?:{title:string;title_ne:string|null}|null; members?:{membership_no:string;full_name:string;full_name_ne:string|null}|null };
 
-function dateAfter(days:number) { const d=new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+function dateAfter(days:number) { const d=new Date(); d.setDate(d.getDate()+days); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,"0"); const day=String(d.getDate()).padStart(2,"0"); return `${y}-${m}-${day}`; }
 export default function CirculationManagement() {
  const supabase=createClient();
  const [books,setBooks]=useState<Book[]>([]);
@@ -38,7 +38,7 @@ export default function CirculationManagement() {
  useEffect(()=>{void load();},[]);
  const activeLoans=useMemo(()=>loans.filter(l=>!l.returned_at),[loans]);
  const filtered=activeLoans.filter(l=>[l.books?.title,l.books?.title_ne,l.members?.full_name,l.members?.full_name_ne,l.members?.membership_no].some(v=>v?.toLowerCase().includes(search.toLowerCase())));
- async function issue(e:React.FormEvent<HTMLFormElement>) {
+ async function issue(e:FormEvent<HTMLFormElement>) {
   e.preventDefault(); if(!supabase||!bookId||!memberId)return;
   setSaving(true);setMessage("");
   const {error}=await supabase.rpc("issue_library_book",{p_book_id:bookId,p_member_id:memberId,p_due_at:dueAt});
