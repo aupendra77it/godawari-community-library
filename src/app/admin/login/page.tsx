@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
   return (
     <main className="min-h-screen grid place-items-center px-4 py-10">
       <section className="panel w-full max-w-md p-7 sm:p-9">
-        <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-green-100 text-3xl">📚</div>
+        <img src="/clrc-logo.png" alt="CLRC २०७४ लोगो" className="mx-auto h-20 w-20 rounded-full object-contain" />
         <p className="mt-5 text-center text-xs font-bold tracking-[.18em] text-green-800">GODAWARI COMMUNITY LIBRARY</p>
         <h1 className="mt-2 text-center text-2xl font-bold">प्रशासन लगइन</h1>
         <p className="mt-1 text-center text-sm text-gray-500">Staff Administration Portal</p>
