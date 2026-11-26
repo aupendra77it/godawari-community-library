@@ -8,10 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 type Book = { id: string; title: string; title_ne: string | null; isbn: string | null; barcode: string | null };
 
 function InstitutionLogo({ size = 42 }: { size?: number }) {
-  return <div style={{ width: size, height: size }} className="shrink-0 rounded-full border-[3px] border-orange-600 bg-white text-center flex flex-col items-center justify-center text-orange-700 leading-none shadow-sm">
-    <span style={{ fontSize: size * 0.19 }} className="font-extrabold">CLRC</span>
-    <span style={{ fontSize: size * 0.22 }} className="font-black">२०७४</span>
-  </div>;
+  return <img src="/clrc-logo.png" alt="CLRC २०७४ लोगो" width={size} height={size} className="shrink-0 rounded-full object-contain" />;
 }
 
 const institutionNameNe = "गोदावरी सामुदायिक पुस्तकालय स्रोत केन्द्र";
