@@ -78,12 +78,20 @@ export default function BookBarcodeManagement() {
                 <button type="button" onClick={(event) => {
                   const label = event.currentTarget.closest(".book-label-print-area");
                   if (!label) return;
-                  document.querySelectorAll(".book-label-print-area").forEach((item) => item.classList.remove("print-this-label"));
-                  label.classList.add("print-this-label");
+                  document.getElementById("book-label-print-root")?.remove();
+                  const printRoot = document.createElement("div");
+                  printRoot.id = "book-label-print-root";
+                  const printLabel = label.cloneNode(true) as HTMLElement;
+                  printLabel.classList.remove("mt-4", "rounded-lg", "border", "border-dashed", "p-3");
+                  printRoot.appendChild(printLabel);
+                  document.body.appendChild(printRoot);
                   document.body.classList.add("printing-book-label");
+                  const cleanup = () => {
+                    document.body.classList.remove("printing-book-label");
+                    printRoot.remove();
+                  };
+                  window.addEventListener("afterprint", cleanup, { once: true });
                   window.print();
-                  document.body.classList.remove("printing-book-label");
-                  label.classList.remove("print-this-label");
                 }} className="mt-3 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Barcode र QR Label प्रिन्ट गर्नुहोस्</button>
               </div>
             </div> : <button type="button" disabled={savingId === book.id} onClick={() => void assignBarcode(book)} className="mt-4 rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{savingId === book.id ? "तयार हुँदैछ..." : "Barcode र QR Code तयार गर्नुहोस्"}</button>}
@@ -96,14 +104,39 @@ export default function BookBarcodeManagement() {
       .book-label-barcode svg { display: block; width: 100% !important; max-width: 100% !important; height: auto !important; }
       .book-label-codes > div:last-child svg { display: block; width: 20mm; height: 20mm; max-width: 20mm; }
       @media print {
-        body.printing-book-label * { visibility: hidden !important; }
-        body.printing-book-label .print-this-label,
-        body.printing-book-label .print-this-label * { visibility: visible !important; }
         @page { size: 100mm 65mm; margin: 0; }
-        .book-label-print-area { position: absolute; left: 0; top: 0; border: 0 !important; box-sizing: border-box; width: 100mm; height: 65mm; padding: 3mm !important; overflow: hidden; }
-        .book-label-codes { grid-template-columns: minmax(0, 1fr) 22mm !important; }
-        .book-label-codes > div:last-child svg { width: 20mm !important; height: 20mm !important; max-width: 20mm !important; }
-        .no-print { display: none !important; }
+        body.printing-book-label > * { display: none !important; }
+        body.printing-book-label > #book-label-print-root {
+          display: block !important;
+          position: fixed !important;
+          inset: 0 auto auto 0 !important;
+          width: 100mm !important;
+          height: 65mm !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+          background: white !important;
+        }
+        #book-label-print-root .book-label-print-area {
+          display: block !important;
+          box-sizing: border-box !important;
+          width: 100mm !important;
+          height: 65mm !important;
+          margin: 0 !important;
+          padding: 3mm !important;
+          border: 0 !important;
+          overflow: hidden !important;
+        }
+        #book-label-print-root .book-label-codes {
+          display: grid !important;
+          grid-template-columns: minmax(0, 1fr) 22mm !important;
+          column-gap: 3mm !important;
+          align-items: center !important;
+        }
+        #book-label-print-root .book-label-barcode { min-width: 0 !important; overflow: hidden !important; }
+        #book-label-print-root .book-label-barcode svg { display: block !important; width: 100% !important; max-width: 100% !important; height: auto !important; }
+        #book-label-print-root .book-label-codes > div:last-child svg { display: block !important; width: 20mm !important; height: 20mm !important; max-width: 20mm !important; }
+        #book-label-print-root .no-print { display: none !important; }
       }
     `}</style>
   </main>;
