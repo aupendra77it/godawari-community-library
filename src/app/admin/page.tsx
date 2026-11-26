@@ -62,7 +62,7 @@ export default async function AdminPage() {
 
   return <main className="min-h-screen">
     <header className="border-b border-green-100 bg-white"><div className="container flex flex-wrap items-center justify-between gap-4 py-4">
-      <div className="flex items-center gap-3"><div className="h-12 w-12 shrink-0 rounded-full border-[3px] border-orange-600 bg-white text-orange-700 flex flex-col items-center justify-center leading-none"><span className="text-[9px] font-extrabold">CLRC</span><span className="text-[11px] font-black">२०७४</span></div><div><p className="text-sm font-bold text-orange-700">गोदावरी सामुदायिक पुस्तकालय स्रोत केन्द्र</p><p className="text-xs font-semibold text-gray-600">Godawari Community Library Resource Center</p><p className="text-[11px] text-gray-500">गोदावरी नगरपालिका–४, बडिखेल, ललितपुर</p><h1 className="mt-1 text-lg font-bold">प्रशासन Dashboard</h1></div></div>
+      <div className="flex items-center gap-3"><img src="/clrc-logo.png" alt="CLRC २०७४ लोगो" className="h-14 w-14 shrink-0 rounded-full object-contain" /><div><p className="text-sm font-bold text-orange-700">गोदावरी सामुदायिक पुस्तकालय स्रोत केन्द्र</p><p className="text-xs font-semibold text-gray-600">Godawari Community Library Resource Center</p><p className="text-[11px] text-gray-500">गोदावरी नगरपालिका–४, बडिखेल, ललितपुर</p><h1 className="mt-1 text-lg font-bold">प्रशासन Dashboard</h1></div></div>
       <div className="flex items-center gap-3"><div className="text-right"><p className="text-sm font-semibold">{displayName}</p><p className="text-xs text-gray-500">{roleLabels[profile.role] ?? profile.role}</p></div><AdminSignOut /></div>
     </div></header>
     <div className="container py-8">
